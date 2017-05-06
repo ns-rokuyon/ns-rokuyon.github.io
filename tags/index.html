@@ -1,4 +1,4 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="jp">
 	<head>
 		<meta charset="utf-8">
@@ -7,7 +7,7 @@
 		<meta name="author" content="ns64">
 		
 		<meta name="generator" content="Hugo 0.21-DEV" />
-		<title>ns64&#39;s blog</title>
+		<title>Tags &middot; ns64&#39;s blog</title>
 		<link rel="shortcut icon" href="http://ns-rokuyon.github.ioimages/favicon.ico">
 		<link rel="stylesheet" href="http://ns-rokuyon.github.iocss/style.css">
 		<link rel="stylesheet" href="http://ns-rokuyon.github.iocss/highlight.css">
@@ -20,9 +20,11 @@
 		
 	</head>
 
-	<body>
-    <nav class="main-nav">
+   <body>
+      <nav class="main-nav">
 	
+	
+		<a href='http://ns-rokuyon.github.io'> <span class="arrow">←</span>Home</a>
 	
 	<a href='http://ns-rokuyon.github.iopost'>Archive</a>
 	<a href='http://ns-rokuyon.github.iotags'>Tags</a>
@@ -33,8 +35,7 @@
 	
 </nav>
 
-
-    <div class="profile">
+      <div class="profile">
     <section id="wrapper">
         <header id="header">
             <a href='http://ns-rokuyon.github.ioabout'>
@@ -46,25 +47,12 @@
     </section>
 </div>
 
-    <section id="wrapper" class="home">
-        <ul id="post-list">
-    
-    
-        
-            <li>
-                <a href='http://ns-rokuyon.github.io/post/test/'><aside class="dates">May 5</aside></a>
-                <a href='http://ns-rokuyon.github.io/post/test/'>
-                    Test <h2></h2>
-                </a>
-            </li>
-        
-    
-</ul>
 
-        <nav id="post-nav">
-    
-</nav>
-        <footer id="footer">
+       <section id="wrapper" class="tags">
+           <div class="page-tags" id="tags">
+               
+           </div>
+           <footer id="footer">
     
         <div id="social">
 
@@ -93,9 +81,9 @@
     </p>
 </footer>
 
-    </section>
+       </section>
 
-    <script src="http://ns-rokuyon.github.iojs/jquery-2.2.4.min.js"></script>
+       <script src="http://ns-rokuyon.github.iojs/jquery-2.2.4.min.js"></script>
 <script src="http://ns-rokuyon.github.iojs/main.js"></script>
 <script src="http://ns-rokuyon.github.iojs/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
@@ -106,5 +94,17 @@
 
 
 
-    </body>
+       <script src="http://ns-rokuyon.github.iojs/jquery.tagcloud.js"></script>
+<script type="text/javascript">
+$.fn.tagcloud.defaults = {
+  size: {start: 10, end: 16, unit: 'pt'},
+  color: {start: '#bbb', end: '#f52'}
+};
+
+$(function () {
+  $('#tags a').tagcloud();
+});
+</script>
+
+   </body>
 </html>
