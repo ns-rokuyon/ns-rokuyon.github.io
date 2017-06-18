@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+
+<html lang="jp">
+
+<head>
+	<meta charset="utf-8">
+	<title>Chronosを用いたポーズ処理の実装 - ns64&#39;s blog</title>
+	<meta name="author" content="map[name:ns64 email:ness3psi@gmail.com]">
+
+	
+	
+	<meta name="description" content="">
+	
+
+	
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+	<link rel="canonical" href="http://ns-rokuyon.github.io/post/unity-chronos/">
+	<link href="http://ns-rokuyon.github.io//favicon.png" rel="shortcut icon">
+	<link href="http://ns-rokuyon.github.io//css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="http://ns-rokuyon.github.io//css/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href="http://ns-rokuyon.github.io//css/my.css" rel="stylesheet" type="text/css">
+<link href="http://ns-rokuyon.github.io//css/monokai.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://ns-rokuyon.github.io//js/highlight.pack.js">
+<script src="http://ns-rokuyon.github.io//js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	
+	<script src="http://ns-rokuyon.github.io//js/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5('ness3psi@gmail.com') + "?s=80' alt='Profile Picture' style='width: 80px;' />");
+		});
+	</script>
+	
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/post/">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="twitter" href='http://twitter.com/ns_rokuyon' title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href='https://github.com/ns-rokuyon' title="GitHub">GitHub</a>
+		
+    	
+	</div>
+</nav>
+
+</header>
+			</div>
+		</div>
+		<div class="mid-col">
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+					<div itemscope itemtype="http://schema.org/Blog">
+					<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <h1 class="title" itemprop="name">Chronosを用いたポーズ処理の実装</h1>
+	<div class="entry-content" itemprop="articleBody"><h2 id="概要">概要</h2>
+
+<p>Chronos - Time ControlアセットをUnityのポーズ処理に使うやり方のメモ.</p>
+
+<p></p>
+
+<p>Unityのポーズ処理はこれといって決まったやり方が無く,地味に面倒.<br />
+調べると一番出てくるやり方はTime.timeScaleを0にする方法だが,
+よほどシンプルなゲームでない限り,うまくいかない.<br />
+ポーズ中に一部のオブジェクトはポーズを無視させたいような状況が発生すると工夫が必要となる.</p>
+
+<p>一般的にTime.timeScale=0以外だと<a href="http://qiita.com/24kwakahana/items/cee31950303f7dfb23bc">Unity4/C# ポーズ処理の実装をどうするか考えた話 - Qiita</a>
+に挙げられているような方法がよく使われている模様.</p>
+
+<h2 id="chronosアセットについて">Chronosアセットについて</h2>
+
+<p><a href="https://www.youtube.com/watch?v=-zq1OZuGXoc"><img src="http://img.youtube.com/vi/-zq1OZuGXoc/0.jpg" alt="" /></a></p>
+
+<p><a href="https://www.assetstore.unity3d.com/jp/#!/content/31225">Chronos - Time Control - アセットストア</a></p>
+
+<p>UnityでのTime controlをやりやすくするアセット.
+動画で紹介されている機能は</p>
+
+<ul>
+<li>SLOW TIME</li>
+<li>PAUSE TIME</li>
+<li>REWIND TIME</li>
+<li>GROUP CONTROL</li>
+<li>OBJECT CONTROL</li>
+<li>AREA CONTROL</li>
+<li>PHYSICS CONTROL</li>
+<li>PHYSICS REWIND</li>
+</ul>
+
+<p>ポーズ処理のみに使うにはオーバースペック感がすごい.</p>
+
+<h2 id="使い方">使い方</h2>
+
+<h3 id="基本">基本</h3>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170612/1.png" />
+    
+    
+</figure>
+
+
+<p>Timekeeperコンポーネントを付けたTimekeeperオブジェクト(シングルトン)をシーンに追加する.
+時間を操作したいグループ単位でGlobalClockコンポーネントを増やす.</p>
+
+<p>GlobalClockは階層構造を持てる.<br />
+Parentで指定したGlobalClockが親になり,Timescaleの変化などが子に伝播する(どう扱うかをParent Blendで設定できる)</p>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170612/3.png" />
+    
+    
+</figure>
+
+
+<p>Clockの管理下にしたいオブジェクトにはTimelineコンポーネントをつける.<br />
+GlobalClockでTimekeeperに付けてあるGlobalClockの中のどれかを選べるようになっている.</p>
+
+<p>Rewindableにチェックを入れるとRewindができるようになるが,多少メモリを余分に消費するらしい.
+ポーズ処理のみに使うのであればチェックを入れない方が良いかも.</p>
+
+<p>timeScaleの設定</p>
+
+<pre><code class="language-cs">// Chronosを使わない場合
+Time.timeScale = 0.0f;
+
+// Chronosを使う場合
+// keyはGlobalClockの名前
+Timekeeper.instance.Clock(key).localTimeScale = 0.0f;
+</code></pre>
+
+<p>各オブジェクトからの時間情報の取得する際は,
+Timelineコンポーネントを介して取得する.</p>
+
+<pre><code class="language-cs">var timeline = GetComponent&lt;Timeline&gt;();
+
+// timeScaleを取得
+bool paused = timeline.timeScale == 0.0f;
+
+// deltaTimeの取得
+float dt = timeline.deltaTime;
+</code></pre>
+
+<h3 id="rigidbody">Rigidbody</h3>
+
+<p>RigidbodyをChronosの管理下にしたい場合は,Timelineコンポーネントが持つRigidbodyTimeline3DクラスをRigidbodyの代わりに使う.
+当然,Rigidbodyコンポーネントも付けておく必要あり.</p>
+
+<pre><code class="language-cs">var timeline = GetComponent&lt;Timeline&gt;();
+
+// 速度の取得
+Vector3 v = timeline.rigidbody.velocity;
+
+// 力を加える
+timeline.rigidbody.AddForce(f);
+</code></pre>
+
+<h2 id="ポーズ処理">ポーズ処理</h2>
+
+<p>例えば,動きを止めたいグループのClockのみtimeScaleを0にするなど.</p>
+
+<pre><code class="language-cs">public static void pause() {
+    clockNamesToPause.ForEach(key =&gt; {
+        Timekeeper.instance.Clock(key).localTimeScale = 0.0f;
+    });
+}
+</code></pre>
+
+<h2 id="参考ページ">参考ページ</h2>
+
+<ul>
+<li><a href="https://www.assetstore.unity3d.com/jp/#!/content/31225">Chronos - Time Control - アセットストア</a></li>
+<li><a href="https://www.youtube.com/watch?v=-zq1OZuGXoc">Chronos - Time Control for Unity - YouTube</a></li>
+<li><a href="http://magicbullet.hatenablog.jp/entry/UnityAsset_Chronos">Unityで時間制御ができるアセット「Chronos - Time Control」を試してみました - Cross Road</a></li>
+<li><a href="http://mackysoft.hatenablog.com/entry/2017/05/03/210000">Chronosで時間の制御【UnityでRTSを作る 9】 - ヒキニートがゲームを作るブログ</a></li>
+<li><a href="http://qiita.com/24kwakahana/items/cee31950303f7dfb23bc">Unity4/C# ポーズ処理の実装をどうするか考えた話 - Qiita</a></li>
+</ul></div></article>
+					
+						<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	
+	</div>
+	
+  	<script type="text/javascript" src='http://s7.addthis.com/js/250/addthis_widget.js#pubid='></script>
+  	
+</div>
+
+					
+					
+					
+
+
+				    </div>
+				</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    ns64
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+<script src="http://ns-rokuyon.github.io//js/slash.js"></script>
+<script src="http://ns-rokuyon.github.io//js/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script></footer>
+		</div>
+	</div>
+	
+</body>
+</html>

@@ -1,23 +1,319 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ns64&#39;s blog</title>
+      <title>ns64&#39;s blog on ns64&#39;s blog </title>
+      <generator uri="https://gohugo.io">Hugo</generator>
     <link>http://ns-rokuyon.github.io/</link>
-    <description>Recent content on ns64&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
     <language>jp</language>
-    <lastBuildDate>Fri, 05 May 2017 22:45:26 +0900</lastBuildDate>
+    <author>ns64</author>
     
-	<atom:link href="http://ns-rokuyon.github.io/index.xml" rel="self" type="application/rss+xml" />
-    
+    <updated>Mon, 12 Jun 2017 18:54:29 JST</updated>
     
     <item>
-      <title>Test</title>
-      <link>http://ns-rokuyon.github.io/post/test/</link>
-      <pubDate>Fri, 05 May 2017 22:45:26 +0900</pubDate>
-      
-      <guid>http://ns-rokuyon.github.io/post/test/</guid>
-      <description>Test Test2 hello world</description>
+      <title>Chronosを用いたポーズ処理の実装</title>
+      <link>http://ns-rokuyon.github.io/post/unity-chronos/</link>
+      <pubDate>Mon, 12 Jun 2017 18:54:29 JST</pubDate>
+      <author>ns64</author>
+      <guid>http://ns-rokuyon.github.io/post/unity-chronos/</guid>
+      <description>&lt;h2 id=&#34;概要&#34;&gt;概要&lt;/h2&gt;
+
+&lt;p&gt;Chronos - Time ControlアセットをUnityのポーズ処理に使うやり方のメモ.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;Unityのポーズ処理はこれといって決まったやり方が無く,地味に面倒.&lt;br /&gt;
+調べると一番出てくるやり方はTime.timeScaleを0にする方法だが,
+よほどシンプルなゲームでない限り,うまくいかない.&lt;br /&gt;
+ポーズ中に一部のオブジェクトはポーズを無視させたいような状況が発生すると工夫が必要となる.&lt;/p&gt;
+
+&lt;p&gt;一般的にTime.timeScale=0以外だと&lt;a href=&#34;http://qiita.com/24kwakahana/items/cee31950303f7dfb23bc&#34;&gt;Unity4/C# ポーズ処理の実装をどうするか考えた話 - Qiita&lt;/a&gt;
+に挙げられているような方法がよく使われている模様.&lt;/p&gt;
+
+&lt;h2 id=&#34;chronosアセットについて&#34;&gt;Chronosアセットについて&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=-zq1OZuGXoc&#34;&gt;&lt;img src=&#34;http://img.youtube.com/vi/-zq1OZuGXoc/0.jpg&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.assetstore.unity3d.com/jp/#!/content/31225&#34;&gt;Chronos - Time Control - アセットストア&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;UnityでのTime controlをやりやすくするアセット.
+動画で紹介されている機能は&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;SLOW TIME&lt;/li&gt;
+&lt;li&gt;PAUSE TIME&lt;/li&gt;
+&lt;li&gt;REWIND TIME&lt;/li&gt;
+&lt;li&gt;GROUP CONTROL&lt;/li&gt;
+&lt;li&gt;OBJECT CONTROL&lt;/li&gt;
+&lt;li&gt;AREA CONTROL&lt;/li&gt;
+&lt;li&gt;PHYSICS CONTROL&lt;/li&gt;
+&lt;li&gt;PHYSICS REWIND&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ポーズ処理のみに使うにはオーバースペック感がすごい.&lt;/p&gt;
+
+&lt;h2 id=&#34;使い方&#34;&gt;使い方&lt;/h2&gt;
+
+&lt;h3 id=&#34;基本&#34;&gt;基本&lt;/h3&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170612/1.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;Timekeeperコンポーネントを付けたTimekeeperオブジェクト(シングルトン)をシーンに追加する.
+時間を操作したいグループ単位でGlobalClockコンポーネントを増やす.&lt;/p&gt;
+
+&lt;p&gt;GlobalClockは階層構造を持てる.&lt;br /&gt;
+Parentで指定したGlobalClockが親になり,Timescaleの変化などが子に伝播する(どう扱うかをParent Blendで設定できる)&lt;/p&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170612/3.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;Clockの管理下にしたいオブジェクトにはTimelineコンポーネントをつける.&lt;br /&gt;
+GlobalClockでTimekeeperに付けてあるGlobalClockの中のどれかを選べるようになっている.&lt;/p&gt;
+
+&lt;p&gt;Rewindableにチェックを入れるとRewindができるようになるが,多少メモリを余分に消費するらしい.
+ポーズ処理のみに使うのであればチェックを入れない方が良いかも.&lt;/p&gt;
+
+&lt;p&gt;timeScaleの設定&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;// Chronosを使わない場合
+Time.timeScale = 0.0f;
+
+// Chronosを使う場合
+// keyはGlobalClockの名前
+Timekeeper.instance.Clock(key).localTimeScale = 0.0f;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;各オブジェクトからの時間情報の取得する際は,
+Timelineコンポーネントを介して取得する.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;var timeline = GetComponent&amp;lt;Timeline&amp;gt;();
+
+// timeScaleを取得
+bool paused = timeline.timeScale == 0.0f;
+
+// deltaTimeの取得
+float dt = timeline.deltaTime;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;rigidbody&#34;&gt;Rigidbody&lt;/h3&gt;
+
+&lt;p&gt;RigidbodyをChronosの管理下にしたい場合は,Timelineコンポーネントが持つRigidbodyTimeline3DクラスをRigidbodyの代わりに使う.
+当然,Rigidbodyコンポーネントも付けておく必要あり.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;var timeline = GetComponent&amp;lt;Timeline&amp;gt;();
+
+// 速度の取得
+Vector3 v = timeline.rigidbody.velocity;
+
+// 力を加える
+timeline.rigidbody.AddForce(f);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;ポーズ処理&#34;&gt;ポーズ処理&lt;/h2&gt;
+
+&lt;p&gt;例えば,動きを止めたいグループのClockのみtimeScaleを0にするなど.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;public static void pause() {
+    clockNamesToPause.ForEach(key =&amp;gt; {
+        Timekeeper.instance.Clock(key).localTimeScale = 0.0f;
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;参考ページ&#34;&gt;参考ページ&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.assetstore.unity3d.com/jp/#!/content/31225&#34;&gt;Chronos - Time Control - アセットストア&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=-zq1OZuGXoc&#34;&gt;Chronos - Time Control for Unity - YouTube&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://magicbullet.hatenablog.jp/entry/UnityAsset_Chronos&#34;&gt;Unityで時間制御ができるアセット「Chronos - Time Control」を試してみました - Cross Road&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://mackysoft.hatenablog.com/entry/2017/05/03/210000&#34;&gt;Chronosで時間の制御【UnityでRTSを作る 9】 - ヒキニートがゲームを作るブログ&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://qiita.com/24kwakahana/items/cee31950303f7dfb23bc&#34;&gt;Unity4/C# ポーズ処理の実装をどうするか考えた話 - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Final IKで武器を拾って使う</title>
+      <link>http://ns-rokuyon.github.io/post/unity-finalik-weapon/</link>
+      <pubDate>Sun, 07 May 2017 18:58:27 JST</pubDate>
+      <author>ns64</author>
+      <guid>http://ns-rokuyon.github.io/post/unity-finalik-weapon/</guid>
+      <description>&lt;h2 id=&#34;概要&#34;&gt;概要&lt;/h2&gt;
+
+&lt;p&gt;Final IKアセットを利用して,ステージに落ちている武器を拾って使えるようにするための手順のメモ.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;キャラクタにはユニティちゃんを使う.&lt;/p&gt;
+
+&lt;h2 id=&#34;コンポーネント&#34;&gt;コンポーネント&lt;/h2&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/1.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;ユニティちゃん&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;ユニティちゃんにはFinal IKとFull Body Biped IKとInteraction Systemをアタッチする.
+Full Body Biped IKを事前にセットしておけば,Interaction Systemの必要項目は自動的に設定される.&lt;/p&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/6.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;Character1_RightHand&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;ユニティちゃんの武器を握ることになるオブジェクト(今回は右手)にFinal IKのHand Poserコンポーネントをアタッチ.&lt;/p&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/3.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;ShortSword &amp;gt; Character1_RightHand&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;武器に合わせる手のターゲットとなるオブジェクトにInteraction Targetコンポーネントをアタッチ.
+手のターゲットの作り方は後述.&lt;/p&gt;
+
+&lt;p&gt;Effector TypeはRight Handを指定.&lt;/p&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/5.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;ShortSword&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;武器オブジェクトにInteraction Objectコンポーネントをアタッチ.&lt;br /&gt;
+&lt;a href=&#34;https://www.youtube.com/playlist?list=PLVxSIA1OaTOu8Nos3CalXbJ2DrKnntMv6&#34;&gt;FINAL IK TUTORIALS&lt;/a&gt;に従って,Weight Curves,Multipliers,Eventsを設定する.&lt;/p&gt;
+
+&lt;p&gt;Weight Curvesはインタラクション時に手のポジションをどのように近づけるかをAnimation Curveで指定できる.&lt;br /&gt;
+EventsのPick Upにチェックを入れると,インタラクション時の指定したTime(Weight Curvesの横軸に対応)に
+インタラクション先となるオブジェクト(武器)をインタラクション元となるオブジェクト(右手)の子オブジェクトにしてくれる(便利!).&lt;/p&gt;
+
+&lt;p&gt;動画にも説明がある通り,Interaction ObjectにCollider(Box Colliderなど)がアタッチされていると挙動がおかしくなる.&lt;br /&gt;
+拾う前の武器オブジェクトを床に置いたり,落下させたいことがある場合は,武器オブジェクトにRigidbodyをつけ,
+武器オブジェクトの子オブジェクトにColliderをつけたCubeなどを入れておくことで対応できる.
+武器オブジェクトにRigidbodyをつけていても問題なく拾うことができるが,拾って手の子オブジェクトになった後は,
+Final IKが自動的にRigidbodyのIs KinematicをTrueにしてくれる.&lt;/p&gt;
+
+&lt;h2 id=&#34;インタラクション先に右手オブジェクトを作る&#34;&gt;インタラクション先に右手オブジェクトを作る&lt;/h2&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/2.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;Interaction target&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;チュートリアル動画が分かりやすいので,見ながらやる.&lt;/p&gt;
+
+&lt;p&gt;シーン上に一時的にコピーしたユニティちゃんモデルの右手を武器の持ち手部分に移動させて,
+指の曲がり方などを右手の関節となる子オブジェクトの位置と角度を調節していく.
+結構めんどくさい作業.&lt;/p&gt;
+
+&lt;h2 id=&#34;hand-poserの設定&#34;&gt;Hand Poserの設定&lt;/h2&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/8.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;武器を拾ったユニティちゃん&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/9.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;握れていない&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;Pick Upした後の右手がインタラクション先に設定した右手座標の通りになっていない.&lt;/p&gt;
+
+
+&lt;figure class=&#34;half-size&#34;&gt;
+    
+        &lt;img src=&#34;http://ns-rokuyon.github.io/images/20170507/10.png&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;Hand PoserのWeightを1.0に&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;Hand PoserのWeightを1にするとインタラクション先のポジションと一致する.&lt;/p&gt;
+
+&lt;h2 id=&#34;参考ページ&#34;&gt;参考ページ&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/playlist?list=PLVxSIA1OaTOu8Nos3CalXbJ2DrKnntMv6&#34;&gt;FINAL IK TUTORIALS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://miyas-maincontents.blogspot.jp/2016/11/final-ik.html&#34;&gt;徒然なるままに Final IKについて（その１）&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Unity on ns64&#39;s blog</title>
+    <link>http://ns-rokuyon.github.io/tags/unity/</link>
+    <description>Recent content in Unity on ns64&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>jp</language>
+    <lastBuildDate>Sun, 07 May 2017 18:58:27 +0900</lastBuildDate>
+    
+	<atom:link href="http://ns-rokuyon.github.io/tags/unity/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Final IKで武器を拾って使う</title>
+      <link>http://ns-rokuyon.github.io/post/unity-finalik-weapon/</link>
+      <pubDate>Sun, 07 May 2017 18:58:27 +0900</pubDate>
+      
+      <guid>http://ns-rokuyon.github.io/post/unity-finalik-weapon/</guid>
+      <description>概要 Final IKアセットを利用して,ステージに落ちている武器を拾って使えるようにするための手順のメモ. キャラクタにはユニティちゃんを使う. コンポー</description>
+    </item>
+    
+  </channel>
+</rss>

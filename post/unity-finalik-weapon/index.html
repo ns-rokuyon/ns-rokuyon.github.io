@@ -1,0 +1,287 @@
+<!DOCTYPE HTML>
+
+<html lang="jp">
+
+<head>
+	<meta charset="utf-8">
+	<title>Final IKで武器を拾って使う - ns64&#39;s blog</title>
+	<meta name="author" content="map[name:ns64 email:ness3psi@gmail.com]">
+
+	
+	
+	<meta name="description" content="">
+	
+
+	
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+	<link rel="canonical" href="http://ns-rokuyon.github.io/post/unity-finalik-weapon/">
+	<link href="http://ns-rokuyon.github.io//favicon.png" rel="shortcut icon">
+	<link href="http://ns-rokuyon.github.io//css/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="http://ns-rokuyon.github.io//css/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href="http://ns-rokuyon.github.io//css/my.css" rel="stylesheet" type="text/css">
+<link href="http://ns-rokuyon.github.io//css/monokai.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://ns-rokuyon.github.io//js/highlight.pack.js">
+<script src="http://ns-rokuyon.github.io//js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	
+	<script src="http://ns-rokuyon.github.io//js/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5('ness3psi@gmail.com') + "?s=80' alt='Profile Picture' style='width: 80px;' />");
+		});
+	</script>
+	
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/post/">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="twitter" href='http://twitter.com/ns_rokuyon' title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href='https://github.com/ns-rokuyon' title="GitHub">GitHub</a>
+		
+    	
+	</div>
+</nav>
+
+</header>
+			</div>
+		</div>
+		<div class="mid-col">
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+					<div itemscope itemtype="http://schema.org/Blog">
+					<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <h1 class="title" itemprop="name">Final IKで武器を拾って使う</h1>
+	<div class="entry-content" itemprop="articleBody"><h2 id="概要">概要</h2>
+
+<p>Final IKアセットを利用して,ステージに落ちている武器を拾って使えるようにするための手順のメモ.</p>
+
+<p></p>
+
+<p>キャラクタにはユニティちゃんを使う.</p>
+
+<h2 id="コンポーネント">コンポーネント</h2>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/1.png" />
+    
+    
+    <figcaption>
+        <h4>ユニティちゃん</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>ユニティちゃんにはFinal IKとFull Body Biped IKとInteraction Systemをアタッチする.
+Full Body Biped IKを事前にセットしておけば,Interaction Systemの必要項目は自動的に設定される.</p>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/6.png" />
+    
+    
+    <figcaption>
+        <h4>Character1_RightHand</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>ユニティちゃんの武器を握ることになるオブジェクト(今回は右手)にFinal IKのHand Poserコンポーネントをアタッチ.</p>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/3.png" />
+    
+    
+    <figcaption>
+        <h4>ShortSword &gt; Character1_RightHand</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>武器に合わせる手のターゲットとなるオブジェクトにInteraction Targetコンポーネントをアタッチ.
+手のターゲットの作り方は後述.</p>
+
+<p>Effector TypeはRight Handを指定.</p>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/5.png" />
+    
+    
+    <figcaption>
+        <h4>ShortSword</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>武器オブジェクトにInteraction Objectコンポーネントをアタッチ.<br />
+<a href="https://www.youtube.com/playlist?list=PLVxSIA1OaTOu8Nos3CalXbJ2DrKnntMv6">FINAL IK TUTORIALS</a>に従って,Weight Curves,Multipliers,Eventsを設定する.</p>
+
+<p>Weight Curvesはインタラクション時に手のポジションをどのように近づけるかをAnimation Curveで指定できる.<br />
+EventsのPick Upにチェックを入れると,インタラクション時の指定したTime(Weight Curvesの横軸に対応)に
+インタラクション先となるオブジェクト(武器)をインタラクション元となるオブジェクト(右手)の子オブジェクトにしてくれる(便利!).</p>
+
+<p>動画にも説明がある通り,Interaction ObjectにCollider(Box Colliderなど)がアタッチされていると挙動がおかしくなる.<br />
+拾う前の武器オブジェクトを床に置いたり,落下させたいことがある場合は,武器オブジェクトにRigidbodyをつけ,
+武器オブジェクトの子オブジェクトにColliderをつけたCubeなどを入れておくことで対応できる.
+武器オブジェクトにRigidbodyをつけていても問題なく拾うことができるが,拾って手の子オブジェクトになった後は,
+Final IKが自動的にRigidbodyのIs KinematicをTrueにしてくれる.</p>
+
+<h2 id="インタラクション先に右手オブジェクトを作る">インタラクション先に右手オブジェクトを作る</h2>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/2.png" />
+    
+    
+    <figcaption>
+        <h4>Interaction target</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>チュートリアル動画が分かりやすいので,見ながらやる.</p>
+
+<p>シーン上に一時的にコピーしたユニティちゃんモデルの右手を武器の持ち手部分に移動させて,
+指の曲がり方などを右手の関節となる子オブジェクトの位置と角度を調節していく.
+結構めんどくさい作業.</p>
+
+<h2 id="hand-poserの設定">Hand Poserの設定</h2>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/8.png" />
+    
+    
+    <figcaption>
+        <h4>武器を拾ったユニティちゃん</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/9.png" />
+    
+    
+    <figcaption>
+        <h4>握れていない</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>Pick Upした後の右手がインタラクション先に設定した右手座標の通りになっていない.</p>
+
+
+<figure class="half-size">
+    
+        <img src="/images/20170507/10.png" />
+    
+    
+    <figcaption>
+        <h4>Hand PoserのWeightを1.0に</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>Hand PoserのWeightを1にするとインタラクション先のポジションと一致する.</p>
+
+<h2 id="参考ページ">参考ページ</h2>
+
+<ul>
+<li><a href="https://www.youtube.com/playlist?list=PLVxSIA1OaTOu8Nos3CalXbJ2DrKnntMv6">FINAL IK TUTORIALS</a></li>
+<li><a href="http://miyas-maincontents.blogspot.jp/2016/11/final-ik.html">徒然なるままに Final IKについて（その１）</a></li>
+</ul></div></article>
+					
+						<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	
+	</div>
+	
+  	<script type="text/javascript" src='http://s7.addthis.com/js/250/addthis_widget.js#pubid='></script>
+  	
+</div>
+
+					
+					
+					
+
+
+				    </div>
+				</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2017
+
+    ns64
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+<script src="http://ns-rokuyon.github.io//js/slash.js"></script>
+<script src="http://ns-rokuyon.github.io//js/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script></footer>
+		</div>
+	</div>
+	
+</body>
+</html>
